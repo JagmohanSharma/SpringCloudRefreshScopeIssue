@@ -146,7 +146,6 @@ public class PropertyBasedDynamicBeanDefinitionRegistrarTest implements Applicat
         }
 
         @Bean
-        @RefreshScope
 //        @RefreshScope If I use this , this test works fine.
         public TestDynaPropRefresh testDynaPropRefresh() {
             return new TestDynaPropRefresh();
