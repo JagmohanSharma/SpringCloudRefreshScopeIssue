@@ -30,3 +30,10 @@
  testConsumerBeanBean2ConsumerBeanSuffix
 ```
 respectively based on provided configuration.
+
+In postProcessBeanDefinitionRegistry() method , we first create property beans and registered to BeanDefinitionRegistry.
+
+And our consumer bean has a reference to property bean so consumer bean is registered by adding this property reference to beanPropertyFieldName.
+
+
+This consumer bean is a Factory bean, which provided objects for given type.
