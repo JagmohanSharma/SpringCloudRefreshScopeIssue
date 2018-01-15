@@ -22,18 +22,17 @@
   private static final String PROPERTY_BEAN_NAME_SUFFIX = "PropertyBeanSuffix";
  ```
  
- So these will be used to create bean names as
+ So these will be used to create bean names respectively based on provided configuration as
  ```
  testPropertyBeanBean1PropertyBeanSuffix
  testPropertyBeanBean2PropertyBeanSuffix
  testConsumerBeanBean1ConsumerBeanSuffix
  testConsumerBeanBean2ConsumerBeanSuffix
 ```
-respectively based on provided configuration.
 
-In postProcessBeanDefinitionRegistry() method , we first create property beans and registered to BeanDefinitionRegistry.
+In postProcessBeanDefinitionRegistry() method , we first create property beans and register to BeanDefinitionRegistry.
 
 And our consumer bean has a reference to property bean so consumer bean is registered by adding this property reference to beanPropertyFieldName.
 
 
-This consumer bean is a Factory bean, which provided objects for given type.
+This consumer bean is a Factory bean, which provides objects for given type.
