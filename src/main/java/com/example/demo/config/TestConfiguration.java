@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Configuration;
 @AutoConfigureAfter(RefreshAutoConfiguration.class)
 public class TestConfiguration {
 
-    public static final String SERVICE_ACCESS_PROP_KEY = "openplatform.service.access.keys";
+    public static final String SERVICE_ACCESS_PROP_KEY = "test.dynaProp.keys";
 
     private static final String REST_TEMPLATE_PROPERTY_BEAN_SUFFIX = "RestTemplateConf";
 
