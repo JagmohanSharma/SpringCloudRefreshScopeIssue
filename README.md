@@ -7,18 +7,19 @@
  
  Two end points:
  1) 
- /rest/v1/getProp 
+ 
+ `/rest/v1/getProp`
  this will return original property values read from `application.properties`:
  TestProp(`@RefreshScope`) first name               `newFIrstName`
    service1RestTemplateConf(`BDRPP`) UserAgent       `TEST_USER_AGENT`
   service1RestTemplateConf(`BDRPP`) connect timeout   `4343`
  
  2)
- /rest/v1/updateEnv
+ `/rest/v1/updateEnv`
  
  This will add new property source to environment and publish RefreshEvent which should refresh beans as well
  but when we again hit
- /rest/v1/getProp
+ `/rest/v1/getProp`
  
  TestProp(`@RefreshScope`) first name               `newfirstname2`
   service1RestTemplateConf(`BDRPP`) UserAgent       `TEST_USER_AGENT`
