@@ -15,9 +15,7 @@ import org.springframework.boot.bind.PropertiesConfigurationFactory;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.Environment;
-import org.springframework.util.ReflectionUtils;
 
-import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,14 +33,6 @@ public class PropertyBasedDynamicBeanDefinitionRegistrar implements BeanDefiniti
 	private String propertyBeanNameSuffix;
 
 	private final String propertyKeysPropertyName;
-	
-	private Class<?> propertyConsumerBean;
-
-	private String consumerBeanPropertyFieldName;
-
-	private String consumerBeanNamePrefix;
-
-	private String consumerBeanNameSuffix;
 
 	public PropertyBasedDynamicBeanDefinitionRegistrar(Class<?> propertyConfigurationClass,
                                                        String propertyBeanNamePrefix, String propertyKeysPropertyName) {
@@ -51,22 +41,8 @@ public class PropertyBasedDynamicBeanDefinitionRegistrar implements BeanDefiniti
 		this.propertyKeysPropertyName = propertyKeysPropertyName;
 	}
 
-	public void setPropertyConsumerBean(Class<?> propertyConsumerBean, String consumerBeanNamePrefix) {
-		this.setPropertyConsumerBean(propertyConsumerBean, consumerBeanNamePrefix, null);
-	}
-
-	public void setPropertyConsumerBean(Class<?> propertyConsumerBean, String consumerBeanNamePrefix, String consumerBeanPropertyFieldName) {
-		this.propertyConsumerBean = propertyConsumerBean;
-		this.consumerBeanNamePrefix = consumerBeanNamePrefix;
-		this.consumerBeanPropertyFieldName = consumerBeanPropertyFieldName;
-	}
-
 	public void setPropertyBeanNameSuffix(String propertyBeanNameSuffix) {
 		this.propertyBeanNameSuffix = propertyBeanNameSuffix;
-	}
-	
-	public void setConsumerBeanNameSuffix(String consumerBeanNameSuffix) {
-		this.consumerBeanNameSuffix = consumerBeanNameSuffix;
 	}
 
 	@Override
@@ -97,35 +73,12 @@ public class PropertyBasedDynamicBeanDefinitionRegistrar implements BeanDefiniti
 			registerPropertyBean(beanDefRegistry, trimmedKey, propBeanName);
 			propertyKeyBeanNameMapping.put(trimmedKey, propBeanName);
 		}
-		if (propertyConsumerBean != null) {
-			String beanPropertyFieldName = getConsumerBeanPropertyVariable();
-			for (Map.Entry<String, String> prop : propertyKeyBeanNameMapping.entrySet()) {
-				registerConsumerBean(beanDefRegistry, prop.getKey(), prop.getValue(), beanPropertyFieldName);
-			}
-		}
-	}
 
-	private void registerConsumerBean(BeanDefinitionRegistry beanDefRegistry, String trimmedKey, String propBeanName, String beanPropertyFieldName) {
-		String consumerBeanName = getBeanName(consumerBeanNamePrefix, trimmedKey, consumerBeanNameSuffix);
-		AbstractBeanDefinition consumerDefinition = preparePropertyConsumerBeanDefinition(propBeanName, beanPropertyFieldName);
-		beanDefRegistry.registerBeanDefinition(consumerBeanName, consumerDefinition);
 	}
 
 	private void registerPropertyBean(BeanDefinitionRegistry beanDefRegistry, String trimmedKey, String propBeanName) {
 		AbstractBeanDefinition propertyBeanDefinition = preparePropertyBeanDefinition(trimmedKey);
 		beanDefRegistry.registerBeanDefinition(propBeanName, propertyBeanDefinition);
-	}
-
-	private String getConsumerBeanPropertyVariable() throws IllegalArgumentException {
-		if (consumerBeanPropertyFieldName != null) {
-			return consumerBeanPropertyFieldName;
-		}
-		Field consumerBeanField = ReflectionUtils.findField(propertyConsumerBean, null, propertyConfigurationClass);
-		if (consumerBeanField == null) {
-			throw new BeanCreationException(String.format("Could not find property of type %s in bean class %s",
-					propertyConfigurationClass.getName(), propertyConsumerBean.getName()));
-		}
-		return consumerBeanField.getName();
 	}
 
 	private AbstractBeanDefinition preparePropertyBeanDefinition(String trimmedKey) {
@@ -140,14 +93,6 @@ public class PropertyBasedDynamicBeanDefinitionRegistrar implements BeanDefiniti
 		return bdb.getBeanDefinition();
 	}
 
-	private AbstractBeanDefinition preparePropertyConsumerBeanDefinition(String propBeanName, String beanPropertyFieldName) {
-		BeanDefinitionBuilder bdb = BeanDefinitionBuilder.genericBeanDefinition(propertyConsumerBean);
-		bdb.addPropertyReference(beanPropertyFieldName, propBeanName);
-		if (isRefreshScopeEnabled()) {
-			bdb.setScope("refresh");
-		}
-		return bdb.getBeanDefinition();
-	}
 
 	private String getBeanName(String prefix, String key, String suffix) {
 		StringBuilder beanNameBuilder = new StringBuilder();

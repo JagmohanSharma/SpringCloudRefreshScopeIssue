@@ -3,12 +3,9 @@ package com.example.demo.config;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.autoconfigure.RefreshAutoConfiguration;
-import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.cloud.endpoint.event.RefreshEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
@@ -35,11 +32,7 @@ import static org.junit.Assert.assertTrue;
         "bean2.name=bname2", "bean2.value=bvalue2"})
 public class PropertyBasedDynamicBeanDefinitionRegistrarTest implements ApplicationEventPublisherAware {
 
-    private static final String CONSUMER_BEAN_NAME_PREFIX = "testConsumerBean";
-
     private static final String PROPERTY_BEAN_NAME_PREFIX = "testPropertyBean";
-
-    private static final String CONSUMER_BEAN_NAME_SUFFIX = "ConsumerBeanSuffix";
 
     private static final String PROPERTY_BEAN_NAME_SUFFIX = "PropertyBeanSuffix";
 
@@ -48,7 +41,6 @@ public class PropertyBasedDynamicBeanDefinitionRegistrarTest implements Applicat
     private static final String BEAN_PROPERTY_VALUE1 = "newbvalue1";
     private static final String BEAN_PROPERTY_NAME2 = "newbname2";
     private static final String BEAN_PROPERTY_VALUE2 = "newbvalue2";
-    private static final String REFRESH = "refresh";
 
     @Autowired
     private ConfigurableApplicationContext applicationContext;
@@ -68,32 +60,17 @@ public class PropertyBasedDynamicBeanDefinitionRegistrarTest implements Applicat
         assertEquals("bname2", testDynaPropRefresh.getPropBeanName("testPropertyBeanBean2PropertyBeanSuffix"));
         assertEquals("bvalue2", testDynaPropRefresh.getPropBeanValue("testPropertyBeanBean2PropertyBeanSuffix"));
 
-        assertEquals(2, testDynaPropRefresh.getTestConsumerBeans().size());
-        assertTrue(testDynaPropRefresh.getTestConsumerBeans().containsKey("testConsumerBeanBean1ConsumerBeanSuffix"));
-        assertTrue(testDynaPropRefresh.getTestConsumerBeans().containsKey("testConsumerBeanBean2ConsumerBeanSuffix"));
-        assertEquals(testDynaPropRefresh.getTestPropBeans().get("testPropertyBeanBean1PropertyBeanSuffix"), testDynaPropRefresh.getTestConsumerBeans().get("testConsumerBeanBean1ConsumerBeanSuffix").getProp());
-        assertEquals(testDynaPropRefresh.getTestPropBeans().get("testPropertyBeanBean2PropertyBeanSuffix"), testDynaPropRefresh.getTestConsumerBeans().get("testConsumerBeanBean2ConsumerBeanSuffix").getProp());
-        assertEquals("bname1:bvalue1", testDynaPropRefresh.getConsumerBeanProcessedString("testConsumerBeanBean1ConsumerBeanSuffix"));
-        assertEquals("bname2:bvalue2", testDynaPropRefresh.getConsumerBeanProcessedString("testConsumerBeanBean2ConsumerBeanSuffix"));
-
-        verifyBeanRefreshScope();
-
         MutablePropertySources propertySources = applicationContext.getEnvironment().getPropertySources();
         PropertySource propertySource = prepareNewPropertySource();
         propertySources.addFirst(propertySource);
 
         applicationEventPublisher.publishEvent(new RefreshEvent(this, propertySource, propertySource.getName()));
 
-        verifyBeanRefreshScope();
-
         assertEquals(2, testDynaPropRefresh.getTestPropBeans().size());
         assertEquals(BEAN_PROPERTY_NAME1, testDynaPropRefresh.getPropBeanName("testPropertyBeanBean1PropertyBeanSuffix"));
         assertEquals(BEAN_PROPERTY_VALUE1, testDynaPropRefresh.getPropBeanValue("testPropertyBeanBean1PropertyBeanSuffix"));
         assertEquals(BEAN_PROPERTY_NAME2, testDynaPropRefresh.getPropBeanName("testPropertyBeanBean2PropertyBeanSuffix"));
         assertEquals(BEAN_PROPERTY_VALUE2, testDynaPropRefresh.getPropBeanValue("testPropertyBeanBean2PropertyBeanSuffix"));
-        assertEquals(2, testDynaPropRefresh.getTestConsumerBeans().size());
-        assertEquals(BEAN_PROPERTY_NAME1 + ":" + BEAN_PROPERTY_VALUE1, testDynaPropRefresh.getConsumerBeanProcessedString("testConsumerBeanBean1ConsumerBeanSuffix"));
-        assertEquals(BEAN_PROPERTY_NAME2 + ":" + BEAN_PROPERTY_VALUE2, testDynaPropRefresh.getConsumerBeanProcessedString("testConsumerBeanBean2ConsumerBeanSuffix"));
     }
 
     private PropertySource prepareNewPropertySource() {
@@ -104,27 +81,6 @@ public class PropertyBasedDynamicBeanDefinitionRegistrarTest implements Applicat
         map.put("bean2.value", BEAN_PROPERTY_VALUE2);
         PropertySource newPropertySource = new MapPropertySource("NewPropertySource", map);
         return newPropertySource;
-    }
-
-    private void verifyBeanRefreshScope() {
-        ConfigurableListableBeanFactory bf = applicationContext.getBeanFactory();
-        BeanDefinition bd1 = bf.getBeanDefinition("testConsumerBeanBean1ConsumerBeanSuffix");
-        String scope = bd1.getScope();
-        assertEquals(scope, REFRESH);
-
-        BeanDefinition bd2 = bf.getBeanDefinition("testConsumerBeanBean1ConsumerBeanSuffix");
-        scope = bd2.getScope();
-        assertEquals(scope, REFRESH);
-
-
-        BeanDefinition bd3 = bf.getBeanDefinition("testConsumerBeanBean1ConsumerBeanSuffix");
-        scope = bd3.getScope();
-        assertEquals(scope, REFRESH);
-
-
-        BeanDefinition bd4 = bf.getBeanDefinition("testConsumerBeanBean1ConsumerBeanSuffix");
-        scope = bd4.getScope();
-        assertEquals(scope, REFRESH);
     }
 
     @Override
@@ -139,8 +95,6 @@ public class PropertyBasedDynamicBeanDefinitionRegistrarTest implements Applicat
         @Bean
         public PropertyBasedDynamicBeanDefinitionRegistrar registrar() {
             PropertyBasedDynamicBeanDefinitionRegistrar registrar = new PropertyBasedDynamicBeanDefinitionRegistrar(TestDynaProp.class, PROPERTY_BEAN_NAME_PREFIX, PROPERTY_NAME);
-            registrar.setPropertyConsumerBean(TestDynaPropConsumer.class, CONSUMER_BEAN_NAME_PREFIX);
-            registrar.setConsumerBeanNameSuffix(CONSUMER_BEAN_NAME_SUFFIX);
             registrar.setPropertyBeanNameSuffix(PROPERTY_BEAN_NAME_SUFFIX);
             return registrar;
         }
@@ -243,8 +197,6 @@ public class PropertyBasedDynamicBeanDefinitionRegistrarTest implements Applicat
         @Resource
         private Map<String, TestDynaProp> testPropBeans;
 
-        @Resource
-        private Map<String, TestDynaPropConsumer> testConsumerBeans;
 
         public String getPropBeanName(String beanName) {
             return testPropBeans.get(beanName).getName();
@@ -254,17 +206,10 @@ public class PropertyBasedDynamicBeanDefinitionRegistrarTest implements Applicat
             return testPropBeans.get(beanName).getValue();
         }
 
-        public String getConsumerBeanProcessedString(String beanName) {
-            return testConsumerBeans.get(beanName).getPostProcessedString();
-        }
-
         public Map<String, TestDynaProp> getTestPropBeans() {
             return testPropBeans;
         }
 
-        public Map<String, TestDynaPropConsumer> getTestConsumerBeans() {
-            return testConsumerBeans;
-        }
     }
 
 }
