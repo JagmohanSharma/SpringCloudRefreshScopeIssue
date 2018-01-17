@@ -13,8 +13,8 @@ public class TestController {
     @Autowired
     private TestService testService;
 
-    @RequestMapping(method = RequestMethod.GET, value = "/getProp2")
-    public String getProp2() throws Exception {
+    @RequestMapping(method = RequestMethod.GET, value = "/getProp")
+    public String getProp() throws Exception {
         return testService.getServices();
     }
 

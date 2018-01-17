@@ -16,10 +16,10 @@ import java.util.Map;
 
 public class TestService implements ApplicationEventPublisherAware {
 
-    private static final String BEAN_PROPERTY_NAME1 = "1212";
+    private static final String BEAN_PROPERTY_NAME1 = "NEW_USER_AGENT";
     private static final String BEAN_PROPERTY_VALUE1 = "3434";
-    private static final String BEAN_PROPERTY_NAME2 = "newbname2";
-    private static final String BEAN_PROPERTY_VALUE2 = "newbvalue2";
+    private static final String BEAN_PROPERTY_NAME2 = "newfirstname2";
+    private static final String BEAN_PROPERTY_VALUE2 = "newlastname2";
 
     @Autowired
     private TestProp testProp;
@@ -32,7 +32,10 @@ public class TestService implements ApplicationEventPublisherAware {
     private ConfigurableApplicationContext applicationContext;
 
     public String getServices() throws Exception {
-        return testProp.getFirstname() + " " + testProp.getLastname() + " " + service1RestTemplateConf.getUserAgent();
+        StringBuilder stringBuilder = new StringBuilder();
+       return stringBuilder.append(" first name(@RefreshScope): " + testProp.getFirstname()).
+                append("<br/>").append(" UserAgent(BDRPP): " + service1RestTemplateConf.getUserAgent()).append("<br/>").
+                append(" connect timeout(BDRPP): " + service1RestTemplateConf.getTimeout().getConnect()).toString();
     }
 
     public void updateEnv() {
