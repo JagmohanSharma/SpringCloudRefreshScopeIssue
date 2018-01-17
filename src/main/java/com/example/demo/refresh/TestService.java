@@ -25,8 +25,8 @@ public class TestService implements ApplicationEventPublisherAware {
     private TestProp testProp;
     private ApplicationEventPublisher applicationEventPublisher;
 
-    @Resource(name = "service1RestTemplateConf")
-    private TestProperties service1RestTemplateConf;
+    @Resource(name = "service1Conf")
+    private TestProperties service1Conf;
 
     @Autowired
     private ConfigurableApplicationContext applicationContext;
@@ -34,8 +34,8 @@ public class TestService implements ApplicationEventPublisherAware {
     public String getServices() throws Exception {
         StringBuilder stringBuilder = new StringBuilder();
        return stringBuilder.append(" first name(@RefreshScope): " + testProp.getFirstname()).
-                append("<br/>").append(" UserAgent(BDRPP): " + service1RestTemplateConf.getUserAgent()).append("<br/>").
-                append(" connect timeout(BDRPP): " + service1RestTemplateConf.getTimeout().getConnect()).toString();
+                append("<br/>").append(" UserAgent(BDRPP): " + service1Conf.getUserAgent()).append("<br/>").
+                append(" connect timeout(BDRPP): " + service1Conf.getTimeout().getConnect()).toString();
     }
 
     public void updateEnv() {
