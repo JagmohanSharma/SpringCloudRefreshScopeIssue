@@ -11,19 +11,19 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ConditionalOnProperty(TestConfiguration.SERVICE_ACCESS_PROP_KEY)
+@ConditionalOnProperty(TestConfiguration.TEST_DYNA_PROP_KEY)
 @AutoConfigureAfter(RefreshAutoConfiguration.class)
 public class TestConfiguration {
 
-    public static final String SERVICE_ACCESS_PROP_KEY = "test.dynaProp.keys";
+    public static final String TEST_DYNA_PROP_KEY = "test.dynaProp.keys";
 
-    private static final String REST_TEMPLATE_PROPERTY_BEAN_SUFFIX = "RestTemplateConf";
+    private static final String PROPERTY_BEAN_SUFFIX = "Conf";
 
 
     @Bean
     public PropertyBasedDynamicBeanDefinitionRegistrar restTemplateRegistrar() {
-        PropertyBasedDynamicBeanDefinitionRegistrar registrar = new PropertyBasedDynamicBeanDefinitionRegistrar(TestProperties.class, null, SERVICE_ACCESS_PROP_KEY);
-        registrar.setPropertyBeanNameSuffix(REST_TEMPLATE_PROPERTY_BEAN_SUFFIX);
+        PropertyBasedDynamicBeanDefinitionRegistrar registrar = new PropertyBasedDynamicBeanDefinitionRegistrar(TestProperties.class, null, TEST_DYNA_PROP_KEY);
+        registrar.setPropertyBeanNameSuffix(PROPERTY_BEAN_SUFFIX);
         return registrar;
     }
 

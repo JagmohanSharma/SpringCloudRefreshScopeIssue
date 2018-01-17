@@ -5,6 +5,11 @@
  
  Now we are only registering a bean using BDRPP and setting its scope as `refresh`but at the time of RefreshEvent we are not getting this bean refreshed.
  
+ First we read `test.dynaProp.keys` property and add a suffix `Conf` to beanName so it is `service1Conf`. Now we create bean and register it using BDRPP.
+ 
+ We have autowired `service1Conf` bean in our `TestService` which is being called from `TestConstroller` using below endpoints. 
+ Here `TestProp` is a bean which is explicitly marked using `@REfreshScope` so after `RefreshEvent` this is getting refreshed properly. but not the bean created using BDRPP.
+ 
  Two end points:
  1) 
  
