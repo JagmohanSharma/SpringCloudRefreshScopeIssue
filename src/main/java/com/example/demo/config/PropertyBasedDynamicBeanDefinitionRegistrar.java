@@ -82,11 +82,7 @@ public class PropertyBasedDynamicBeanDefinitionRegistrar implements BeanDefiniti
 	}
 
 	private AbstractBeanDefinition preparePropertyBeanDefinition(String trimmedKey) {
-		BeanDefinitionBuilder bdb = BeanDefinitionBuilder.genericBeanDefinition(PropertiesConfigurationFactory.class);
-		bdb.addConstructorArgValue(propertyConfigurationClass);
-		bdb.addPropertyValue("propertySources", environment.getPropertySources());
-		bdb.addPropertyValue("conversionService", environment.getConversionService());
-		bdb.addPropertyValue("targetName", trimmedKey);
+		BeanDefinitionBuilder bdb = BeanDefinitionBuilder.genericBeanDefinition(propertyConfigurationClass);
 		if (isRefreshScopeEnabled()) {
 			bdb.setScope("refresh");
 		}

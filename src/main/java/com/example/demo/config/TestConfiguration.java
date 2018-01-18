@@ -21,6 +21,11 @@ public class TestConfiguration {
 
 
     @Bean
+    public PropertyBasedDynamicBeanPostProcessorRegistrar propertyBasedDynamicBeanPostProcessorRegistrar() {
+        return new PropertyBasedDynamicBeanPostProcessorRegistrar();
+    }
+
+    @Bean
     public PropertyBasedDynamicBeanDefinitionRegistrar restTemplateRegistrar() {
         PropertyBasedDynamicBeanDefinitionRegistrar registrar = new PropertyBasedDynamicBeanDefinitionRegistrar(TestProperties.class, null, TEST_DYNA_PROP_KEY);
         registrar.setPropertyBeanNameSuffix(PROPERTY_BEAN_SUFFIX);
