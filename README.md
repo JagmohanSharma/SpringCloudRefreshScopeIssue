@@ -17,8 +17,8 @@
  this will return original property values read from `application.properties`:
  
  TestProp(`@RefreshScope`) first name               `newFIrstName` <br />
-   service1RestTemplateConf(`BDRPP`) UserAgent       `TEST_USER_AGENT`   <br />
-  service1RestTemplateConf(`BDRPP`) connect timeout   `4343` <br />
+   service1Conf(`BDRPP`) UserAgent       `TEST_USER_AGENT`   <br />
+  service1Conf(`BDRPP`) connect timeout   `4343` <br />
  
  2)
  `/rest/v1/updateEnv`
@@ -28,8 +28,8 @@
  `/rest/v1/getProp`
  
  TestProp(`@RefreshScope`) first name               `newfirstname2`  <br />
-  service1RestTemplateConf(`BDRPP`) UserAgent       `TEST_USER_AGENT` <br />
- service1RestTemplateConf(`BDRPP`) connect timeout   `4343` <br />
+  service1Conf(`BDRPP`) UserAgent       `TEST_USER_AGENT` <br />
+ service1Conf(`BDRPP`) connect timeout   `4343` <br />
  
  
- As we can see UserAgent and connect timeout values are not updated since its bean `service1RestTemplateConf` is not getting refreshed.
+ As we can see UserAgent and connect timeout values are not updated since its bean `service1Conf` is not getting refreshed.
