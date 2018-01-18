@@ -20,6 +20,10 @@ public class TestConfiguration {
     private static final String PROPERTY_BEAN_SUFFIX = "Conf";
 
 
+    /**
+     * Below BeanPostProcessorRegistrar is basically used to register BeanPostProcessor for binding properties to created property bean.
+     * @return
+     */
     @Bean
     public PropertyBasedDynamicBeanPostProcessorRegistrar propertyBasedDynamicBeanPostProcessorRegistrar() {
         return new PropertyBasedDynamicBeanPostProcessorRegistrar();

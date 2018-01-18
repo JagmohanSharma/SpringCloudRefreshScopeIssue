@@ -70,18 +70,18 @@ public class PropertyBasedDynamicBeanDefinitionRegistrar implements BeanDefiniti
 				continue;
 			}
 			String propBeanName = getBeanName(propertyBeanNamePrefix, trimmedKey, propertyBeanNameSuffix);
-			registerPropertyBean(beanDefRegistry, trimmedKey, propBeanName);
+			registerPropertyBean(beanDefRegistry, propBeanName);
 			propertyKeyBeanNameMapping.put(trimmedKey, propBeanName);
 		}
 
 	}
 
-	private void registerPropertyBean(BeanDefinitionRegistry beanDefRegistry, String trimmedKey, String propBeanName) {
-		AbstractBeanDefinition propertyBeanDefinition = preparePropertyBeanDefinition(trimmedKey);
+	private void registerPropertyBean(BeanDefinitionRegistry beanDefRegistry, String propBeanName) {
+		AbstractBeanDefinition propertyBeanDefinition = preparePropertyBeanDefinition();
 		beanDefRegistry.registerBeanDefinition(propBeanName, propertyBeanDefinition);
 	}
 
-	private AbstractBeanDefinition preparePropertyBeanDefinition(String trimmedKey) {
+	private AbstractBeanDefinition preparePropertyBeanDefinition() {
 		BeanDefinitionBuilder bdb = BeanDefinitionBuilder.genericBeanDefinition(propertyConfigurationClass);
 		if (isRefreshScopeEnabled()) {
 			bdb.setScope("refresh");
